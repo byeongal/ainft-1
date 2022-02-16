@@ -53,7 +53,7 @@ setInterval(async () => {
         if (queue.length === 0)
             return;
         const {signature, transactionData, botResponse} = queue.shift();
-        const req = await ain.sendSignedTransaction(signature, transactionData, chainId);
+        const req = await ain.sendSignedTransaction(signature, transactionData);
         console.log(`Request Log: ${JSON.stringify(req)}`);
         const ref = transactionData.operation.ref;
         const responseRef = ref.split('/').slice(0, -1).concat('response').join('/');
@@ -110,7 +110,7 @@ app.post('/chat', async (req, res) => {
     const {signature, transactionData} = req.body;
     const txHash = getTransactionHash(transactionData);
     try {
-        const sigAddr = getAddress(txHash, signature);
+        const sigAddr = getAddress(txHash, signature, chainId);
         if (!verifySignature(transactionData, signature, sigAddr, chainId)) {
             res.status(401).json(`Invalid transaction or signature : ${JSON.stringify(req.body)}`)
             return;
